@@ -1,0 +1,5 @@
+export { default as Home } from './Home'
+export { default as Read } from './Read'
+export { default as Book } from './Book'
+export { default as Rack } from './Rack'
+export { default as NotFound } from './NotFound'
