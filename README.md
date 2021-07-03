@@ -1,4 +1,4 @@
-# Stackcopy
+# Library Node
 
 Library app using MEVN Stack
 
