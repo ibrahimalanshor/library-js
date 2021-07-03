@@ -4,8 +4,14 @@
       <nav class="level">
         <div class="level-left">
           <div class="level-item">
-            <b-skeleton width="200px" height="25px" v-if="loading" />
-            <h2 class="title" v-else>{{ heading }}</h2>
+            <nav class="breadcrumb">
+              <ul>
+                <li><router-link :to="{ name: 'Rack', query: {} }">Rak</router-link></li>
+                <li v-if="rack"><router-link :to="{ params: { slug: rack.slug } }">{{ rack.name }}</router-link></li>
+                <li class="is-active" v-if="page"><a href="#">Halaman {{ page }}</a></li>
+                <li class="is-active" v-if="title"><a href="#">Cari "{{ title }}"</a></li>
+              </ul>
+            </nav>
           </div>
         </div>
 
@@ -23,8 +29,21 @@
       </div>
 
       <div v-else>
-        <div class="columns is-multiline" v-if="books.totalDocs">
-          <card v-for="(book, key) in books.docs" :key="key" :book="book" />
+        <div v-if="books.totalDocs">
+          <div class="columns is-multiline mb-5">
+            <card v-for="(book, key) in books.docs" :key="key" :book="book" />
+          </div>
+
+          <nav class="pagination">
+            <router-link :to="{ query: { title: title, page: books.prevPage } }" class="pagination-previous" v-if="books.hasPrevPage">Prev</router-link>
+            <router-link :to="{ query: { title: title, page: books.nextPage } }" class="pagination-next" v-if="books.hasNextPage">Next</router-link>
+
+            <ul class="pagination-list">
+              <li v-for="(page, key) in books.totalPages" :key="key">
+                <router-link :to="{ query: { title: title, page } }" class="pagination-link" :class="{ 'is-current': books.page === page }">{{ page }}</router-link>
+              </li>
+            </ul>
+          </nav>
         </div>
         <div v-else>
           No Result
@@ -45,21 +64,29 @@
     data() {
       return {
         title: this.$route.query.title,
+        page: this.$route.query.page,
         loading: true,
         rack: null,
         books: [],
       }
     },
-    computed: {
-      heading() {
-        return  this.title ? `Search "${this.title}" in ${this.rack.name}` : this.rack.name 
-      }
-    },
     watch: {
       async title(title) {
-        this.$router.push({ query: { title } })
-
+        this.$router.push({ query: { title }})
+        
         await this.setRack()
+      },
+      async page() {        
+        await this.setRack()
+      },
+      '$route.query.page': async function (page) {
+        this.page = page
+      },
+      '$route.query.title': async function (title) {
+        this.title = title
+      },
+      '$route.query': async function () {
+        this.setTitle()
       }
     },
     methods: {
@@ -70,7 +97,8 @@
 
           const { rack, books } = await this.find({
             slug: this.$route.params.slug,
-            title: this.title
+            title: this.title,
+            page: this.page
           })
 
           this.rack = rack
@@ -80,11 +108,27 @@
         } catch (err) {
           this.$router.push({ name: 'NotFound' })
         }
+      },
+      setTitle() {
+        let title = this.rack ? `${this.rack.name} - ` : 'Book - '
+
+        if (this.title && this.page) {
+          title += `Search "${this.title}" in Page ${this.page}`
+        } else if (this.title) {
+          title += `Search "${this.title}"`
+        } else if (this.page) {
+          title += `Page ${this.page}`
+        } else {
+          title += 'All Book'
+        }
+
+        document.title = title
       }
     },
     async mounted() {
       await this.setRack()
-
+      
+      this.setTitle()
       this.$Progress.finish()
     }
   }

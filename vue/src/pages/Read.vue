@@ -89,10 +89,15 @@
         } catch (err) {
           this.$router.push({ name: 'NotFound' })
         }
+      },
+      setTitle() {
+        document.title = this.book.title
       }
     },
     async mounted() {
       await this.setBook()
+
+      this.setTitle()
 
       this.$Progress.finish()
       this.loading = false

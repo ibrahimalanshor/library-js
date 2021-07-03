@@ -1,8 +1,9 @@
 export default {
-  async get({ rootState: { http } }, { title = '' }) {
+  async get({ rootState: { http } }, { title = '', page }) {
     const books = await http.get('/book', {
       params: {
-        search: title
+        search: title,
+        page
       }
     })
 

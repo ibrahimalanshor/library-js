@@ -2,7 +2,7 @@ const { Book } = require('../models')
 
 class BookRepository {
 
-  async get({ page = null, search = null }) {
+  async get({ page = 1, search = null }) {
     try {
       const query = search ? { title: { $regex: search, $options: 'i' } } : {}
       const options = {
@@ -13,6 +13,7 @@ class BookRepository {
             select: '_id name slug location'
           }
         ],
+        limit: 8,
         page
       }
 
@@ -24,7 +25,7 @@ class BookRepository {
     }
   }
 
-  async getByRack(rack, { page = null, search = ''}) {
+  async getByRack(rack, { page = 1, search = ''}) {
     try {
       const query = {
         title: { $regex: search, $options: 'i' },

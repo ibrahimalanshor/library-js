@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon server.js 0.0.0.0",
     "seed": "node seed.js"
   },
   "name": "express",

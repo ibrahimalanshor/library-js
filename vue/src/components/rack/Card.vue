@@ -1,5 +1,5 @@
 <template>
-  <div class="column is-2">
+  <div class="column is-4-tablet is-2-desktop">
     <router-link :to="{ name: 'RackView', params: { slug: rack.slug } }">
       <div class="box" :class="bg()">
         <p><b>{{ rack.name }}</b></p>

@@ -14,10 +14,10 @@ const rules = [
     .isLength({ min: 5 }).withMessage('must be at least 5 chars long'),
   body('author')
     .isString().bail().withMessage('must be string')
-    .isLength({ min: 5 }).withMessage('must be at least 5 chars long'),
+    .isLength({ min: 3 }).withMessage('must be at least 5 chars long'),
   body('publisher')
     .isString().bail().withMessage('must be string')
-    .isLength({ min: 5 }).withMessage('must be at least 5 chars long'),
+    .isLength({ min: 3 }).withMessage('must be at least 5 chars long'),
   body('year')
     .isLength({ min:4, max:4 }).bail().withMessage('must be year'),
   body('description')

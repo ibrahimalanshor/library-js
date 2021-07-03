@@ -12,7 +12,8 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: {
-      home: true
+      home: true,
+      title: 'Library'
     }
   },
   {
@@ -38,7 +39,10 @@ const routes = [
   {
     path: '/404',
     name: 'NotFound',
-    component: NotFound
+    component: NotFound,
+    meta: {
+      title: 'Not Found'
+    }
   }
 ]
 

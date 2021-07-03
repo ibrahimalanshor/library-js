@@ -14,10 +14,7 @@
 
       <template #end>
         <b-navbar-item tag="div">
-          <div class="buttons">
-            <b-button type="is-light" outlined>Sign Up</b-button>
-            <a href="" class="button is-light">Login</a>
-          </div>
+          <b-button tag="router-link" :to="{ name: 'Book'}" icon-left="search" type="is-primary" inverted>Search</b-button>
         </b-navbar-item>
       </template>
     </b-navbar>
@@ -26,6 +23,16 @@
 
 <script>
   export default {
+    data() {
+      return {
+        search: this.$route.query.title
+      }
+    },
+    watch: {
+      async search(search) {
+        this.$router.push({ name: 'Book', query: { title: search } })
+      }
+    },
     computed: {
       active() {
         return this.$route.name

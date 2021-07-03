@@ -6,7 +6,7 @@
     <div class="hero-body">
       <div class="container">
         <h1 class="title">Library</h1>
-        <h2 class="subtitle">Search book, list of all, make loan, extend and return</h2>
+        <h2 class="subtitle">Search book, by rack, view book</h2>
       </div>
     </div>
   </section>

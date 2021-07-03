@@ -4,7 +4,13 @@
       <nav class="level">
         <div class="level-left">
           <div class="level-item">
-            <h2 class="title">{{ heading }} <span v-if="!loading">({{ racks.totalDocs }})</span></h2>
+            <nav class="breadcrumb">
+              <ul>
+                <li><router-link :to="{ query: {} }">Semua Rak</router-link></li>
+                <li class="is-active" v-if="page"><a href="#">Halaman {{ page }}</a></li>
+                <li class="is-active" v-if="name"><a href="#">Cari "{{ name }}"</a></li>
+              </ul>
+            </nav>
           </div>
         </div>
         <div class="level-right">
@@ -21,9 +27,23 @@
       </div>
 
       <div v-else>
-        <div class="columns is-multiline" v-if="racks.totalDocs">
-          <card v-for="(rack, key) in racks.docs" :key="key" :rack="rack" />
+        <div v-if="racks.totalDocs">
+          <div class="columns is-multiline">
+            <card v-for="(rack, key) in racks.docs" :key="key" :rack="rack" />
+          </div>
+
+          <nav class="pagination">
+            <router-link :to="{ query: { name: name, page: racks.prevPage } }" class="pagination-previous" v-if="racks.hasPrevPage">Prev</router-link>
+            <router-link :to="{ query: { name: name, page: racks.nextPage } }" class="pagination-next" v-if="racks.hasNextPage">Next</router-link>
+
+            <ul class="pagination-list">
+              <li v-for="(page, key) in racks.totalPages" :key="key">
+                <router-link :to="{ query: { name: name, page } }" class="pagination-link" :class="{ 'is-current': racks.page === page }">{{ page }}</router-link>
+              </li>
+            </ul>
+          </nav>
         </div>
+
         <div v-else>
           No Result
         </div>
@@ -44,12 +64,8 @@
       return {
         loading: true,
         name: this.$route.query.name,
+        page: this.$route.query.page,
         racks: [],
-      }
-    },
-    computed: {
-      heading() {
-        return this.name ? `Search "${this.name}"` : 'All Rack'
       }
     },
     watch: {
@@ -57,6 +73,18 @@
         this.$router.push({ query: { name }})
         
         await this.setRack()
+      },
+      async page() {        
+        await this.setRack()
+      },
+      '$route.query.page': async function (page) {
+        this.page = page
+      },
+      '$route.query.name': async function (name) {
+        this.name = name
+      },
+      '$route.query': async function () {
+        this.setTitle()
       }
     },
     methods: {
@@ -66,11 +94,30 @@
         this.loading = true
         
         this.racks = await this.get({
-          name: this.name
+          name: this.name,
+          page: this.page
         })
 
         this.loading = false
+      },
+      setTitle() {
+        let title = 'Rack - '
+
+        if (this.name && this.page) {
+          title += `Search "${this.name}" in Page ${this.page}`
+        } else if (this.name) {
+          title += `Search "${this.name}"`
+        } else if (this.page) {
+          title += `Page ${this.page}`
+        } else {
+          title += 'All Rack'
+        }
+
+        document.title = title
       }
+    },
+    created() {
+      this.setTitle()
     },
     async mounted() {
       await this.setRack()

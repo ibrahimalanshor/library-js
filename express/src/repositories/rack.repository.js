@@ -3,7 +3,7 @@ const BookRepository = require('./book.repository')
 
 class RackRepository {
 
-  async get({ page = null, search = ''}) {
+  async get({ page = 1, search = ''}) {
     try {
       const query = Rack.aggregate([
         { $match: { name: { $regex: search, $options: 'i' } } },
@@ -21,6 +21,7 @@ class RackRepository {
 
       const options = {
         sort: 'name',
+        limit: 24,
         page
       }
 

@@ -1,16 +1,16 @@
 <template>
-  <div class="column is-3">
-    <div class="card">
+  <div class="column is-12-mobile is-4-tablet is-3-desktop is-flex">
+    <div class="card book">
       <div class="card-image">
-        <figure class="image is-5by3">
-          <img :src="book.cover" alt="">
+        <figure class="image">
+          <img :src="book.cover" class="cover">
         </figure>
       </div>
       <div class="card-content">
         <div class="content">
           <router-link :to="{ name: 'Read', params: { book: book.isbn } }"><h5>{{ book.title }}</h5></router-link>
 
-          <p>{{ excerpt }}</p>
+          <p v-html="excerpt"></p>
 
           <div class="mb-2">
             <b-taglist attached>
@@ -23,6 +23,17 @@
     </div>
   </div>
 </template>
+
+<style>
+  .book {
+    width: 100%;
+  }
+  .cover {
+    object-fit: cover;
+    object-position: top;
+    max-height: 300px;
+  }
+</style>
 
 <script>
   export default {
